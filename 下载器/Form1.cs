@@ -14,19 +14,28 @@ namespace 下载器
 {
     public partial class Form1 : Form
     {
-        string text = "更新";
+        private readonly string text = "更新";
         public Form1()
         {
             InitializeComponent();
             CheckVersion();
         }
-        static List<string> config => File.ReadAllLines("config.ini").ToList();
+        static List<string> Config => File.ReadAllLines("config.ini").ToList();
 
         public void CheckVersion()
         {
-            string ip = config[0];
+            string ip = Config[0];
             var checkVersionClient = new WebSocket($"ws://{ip}/CheckVersion");
-            FileInfo fileInfo = new FileInfo(comboBox1.Text + "//GameVersion.txt");
+            var versionFile = comboBox1.Text + "//GameVersion.txt";
+            if (!Directory.Exists(comboBox1.Text))
+            {
+                Directory.CreateDirectory(comboBox1.Text);
+            }
+            if (!File.Exists(versionFile))
+            {
+                File.Create(versionFile).Dispose();
+            }
+            FileInfo fileInfo = new FileInfo(versionFile);
             string currentVersion = File.ReadAllText(comboBox1.Text + "//GameVersion.txt");
 
             checkVersionClient.OnMessage += (send, ev) =>
@@ -49,10 +58,10 @@ namespace 下载器
             checkVersionClient.Connect();
             checkVersionClient.Send(comboBox1.Text);
         }
-        private void btn_Update_Click(object sender, EventArgs e)
+        private void Btn_Update_Click(object sender, EventArgs e)
         {
 
-            string ip = config[0];
+            string ip = Config[0];
             //ip = "127.0.0.1:495";
             var downloadClient = new WebSocket($"ws://{ip}/Download");
             TaskManager.Init();
@@ -77,17 +86,17 @@ namespace 下载器
             //downloadClient.Close();
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void Timer1_Tick(object sender, EventArgs e)
         {
-            btn_Update.Text=text;
+            btn_Update.Text = text;
         }
 
-        private void comboBox1_TextChanged(object sender, EventArgs e)
+        private void ComboBox1_TextChanged(object sender, EventArgs e)
         {
             CheckVersion();
         }
 
-        private void btn_start_Click(object sender, EventArgs e)
+        private void Btn_start_Click(object sender, EventArgs e)
         {
             Process.Start(new DirectoryInfo(comboBox1.Text).GetFiles("*.exe").First().FullName);
         }

@@ -28,17 +28,6 @@ E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcorea
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\更新服务器.runtimeconfig.dev.json
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\更新服务器.dll
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\更新服务器.pdb
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Bot.Streaming.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Abstractions.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Microsoft.Net.Http.Headers.dll
-E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\websocket-sharp.dll
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\obj\Debug\netcoreapp3.1\更新服务器.csprojAssemblyReference.cache
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\obj\Debug\netcoreapp3.1\更新服务器.AssemblyInfoInputs.cache
@@ -46,3 +35,4 @@ E:\东方格致录\TouHouCardServer\更新器\更新服务器\obj\Debug\netcorea
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\obj\Debug\netcoreapp3.1\更新服务器.csproj.CopyComplete
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\obj\Debug\netcoreapp3.1\更新服务器.dll
 E:\东方格致录\TouHouCardServer\更新器\更新服务器\obj\Debug\netcoreapp3.1\更新服务器.pdb
+E:\东方格致录\TouHouCardServer\更新器\更新服务器\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll

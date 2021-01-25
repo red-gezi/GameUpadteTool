@@ -43,7 +43,7 @@ namespace 更新服务器
         {
             int length = 100000;
             List<FileData> standFileData = new List<FileData>();
-            for (int i = 0; i < data.Length; i += length)
+            for (int i = 0; i < (data.Length==0? 1 : data.Length); i += length)
             {
                 standFileData.Add(new FileData(data.Length / length + 1, i / length + 1, tag, direPath, fileName, data.Skip(i).Take(length).ToArray()));
             }

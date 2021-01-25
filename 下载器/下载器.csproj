@@ -110,6 +110,7 @@
   <ItemGroup>
     <Compile Include="Extension.cs" />
     <Compile Include="FileData.cs" />
+    <Compile Include="FileList.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

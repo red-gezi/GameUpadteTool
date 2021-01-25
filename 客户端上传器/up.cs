@@ -7,7 +7,7 @@ namespace 客户端上传器
 {
     class up
     {
-        static List<string> config => File.ReadAllLines("config.ini").ToList();
+        static List<string> config => File.ReadAllLines(@"E:\东方格致录\TouHouCardServer\更新器\客户端上传器\bin\Debug\config.ini").ToList();
         static void Main(string[] args)
         {
            
@@ -19,6 +19,7 @@ namespace 客户端上传器
                 var client = new WebSocket($"ws://{ip}/Update");
                 client.Connect();
                 Console.WriteLine("连接完成");
+                File.WriteAllText(tragetParentPath+"/GameVerious.txt",DateTime.Now.ToString());
                 new DirectoryInfo(tragetParentPath).GetFiles("*.*", SearchOption.AllDirectories)
                     .Select(file => new FileData(tag, tragetParentPath, file))
                     .ToList().ForEach(fileData =>

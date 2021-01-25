@@ -26,8 +26,8 @@ namespace 下载器
         {
             string ip = config[0];
             var checkVersionClient = new WebSocket($"ws://{ip}/CheckVersion");
-            FileInfo fileInfo = new FileInfo(comboBox1.Text + "//GameVerious.txt");
-            string currentVersion = File.ReadAllText(comboBox1.Text + "//GameVerious.txt");
+            FileInfo fileInfo = new FileInfo(comboBox1.Text + "//GameVersion.txt");
+            string currentVersion = File.ReadAllText(comboBox1.Text + "//GameVersion.txt");
 
             checkVersionClient.OnMessage += (send, ev) =>
             {

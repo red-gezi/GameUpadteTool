@@ -19,7 +19,7 @@ namespace 客户端上传器
                 var client = new WebSocket($"ws://{ip}/Update");
                 client.Connect();
                 Console.WriteLine("连接完成");
-                File.WriteAllText(tragetParentPath+"/GameVerious.txt",DateTime.Now.ToString());
+                File.WriteAllText(tragetParentPath+"/GameVersion.txt",DateTime.Now.ToString());
                 new DirectoryInfo(tragetParentPath).GetFiles("*.*", SearchOption.AllDirectories)
                     .Select(file => new FileData(tag, tragetParentPath, file))
                     .ToList().ForEach(fileData =>

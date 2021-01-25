@@ -50,7 +50,7 @@ namespace 更新服务器
             protected override void OnMessage(MessageEventArgs e)
             {
                 string tag = e.Data;
-                FileInfo gameVersion = new FileInfo($"{tag}/GameVerious.txt");
+                FileInfo gameVersion = new FileInfo($"{tag}/GameVersion.txt");
                 Console.WriteLine(gameVersion.FullName);
                 string version = "error";
                 if (gameVersion.Exists)

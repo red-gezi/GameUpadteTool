@@ -18,7 +18,47 @@ namespace 下载器
         public Form1()
         {
             InitializeComponent();
-            CheckVersion();
+            //CheckVersion();
+            GameFileManeger.GetServerFileList();
+        }
+        /// <summary>
+        /// 新版代码
+        /// </summary>
+        public void GetFIleList()
+        {
+            //向服务器要取文件清单
+            //对比本地
+            //设置按钮状态
+        }
+        private void btn_Start_Click(object sender, EventArgs e)
+        {
+            GameFileManeger.GetServerFileList();
+            GameFileManeger.CheckFileList();
+            GameFileManeger.DownFileList();
+            //
+            string ip = config[0];
+            //ip = "127.0.0.1:495";
+            var downloadClient = new WebSocket($"ws://{ip}/Download");
+            TaskManager.Init();
+            downloadClient.OnMessage += (send, ev) =>
+            {
+                FileData fileData = ev.Data.ToObject<FileData>();
+                TaskManager.Add(fileData);
+                Console.WriteLine("接收文件中" + fileData.fileName + ":" + fileData.currentRank + "/" + fileData.totalRank);
+                downloadClient.Send("Success");
+            };
+            downloadClient.OnClose += (send, ev) => { Console.WriteLine(ev.Reason); };
+            downloadClient.OnError += (send, ev) => { Console.WriteLine(ev.Message); };
+            //Console.ReadLine();
+            downloadClient.Connect();
+            Console.WriteLine("连接完成");
+            FlieList flieList = new FlieList(comboBox1.Text);
+            new DirectoryInfo(comboBox1.Text).GetFiles("*", SearchOption.AllDirectories).ToList().ForEach(file => flieList.Add(file));
+            downloadClient.Send(flieList.ToJson());
+            Console.WriteLine("发送完毕");
+
+            //Console.ReadLine();
+            //downloadClient.Close();
         }
         static List<string> config => File.ReadAllLines("config.ini").ToList();
 

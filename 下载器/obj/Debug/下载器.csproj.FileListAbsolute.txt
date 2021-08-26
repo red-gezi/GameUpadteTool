@@ -41,3 +41,15 @@ E:\东方格致录\TouHouCardServer\更新器\下载器\obj\Debug\下载器.cspr
 E:\东方格致录\TouHouCardServer\更新器\下载器\obj\Debug\下载器.exe
 E:\东方格致录\TouHouCardServer\更新器\下载器\obj\Debug\下载器.pdb
 E:\东方格致录\TouHouCardServer\更新器\下载器\bin\Debug\websocket-sharp.dll
+D:\vs2022-Project\GameUpadteTool\下载器\bin\Debug\下载器.exe.config
+D:\vs2022-Project\GameUpadteTool\下载器\bin\Debug\下载器.exe
+D:\vs2022-Project\GameUpadteTool\下载器\bin\Debug\下载器.pdb
+D:\vs2022-Project\GameUpadteTool\下载器\bin\Debug\Newtonsoft.Json.dll
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.csproj.AssemblyReference.cache
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.Form1.resources
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.Properties.Resources.resources
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.csproj.GenerateResource.cache
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.csproj.CoreCompileInputs.cache
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.csproj.CopyComplete
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.exe
+D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.pdb

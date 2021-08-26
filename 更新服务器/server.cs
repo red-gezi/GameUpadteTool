@@ -19,7 +19,7 @@ namespace 更新服务器
             server.AddWebSocketService<Update>("/Update");
             server.AddWebSocketService<Download>("/Download");
             server.AddWebSocketService<CheckVersion>("/CheckVersion");
-            ///server.AddWebSocketService<ReceiveOver>("/ReceiveOver");
+            server.AddWebSocketService<GetServerFileList>("/GetServerFileList");
 
             server.Start();
             Console.WriteLine("服务器开始！");
@@ -66,19 +66,38 @@ namespace 更新服务器
         {
             protected override void OnMessage(MessageEventArgs e)
             {
-                string info = e.Data;
-                if (info != "Success")
-                {
-                    DownLoadTask newTask = new DownLoadTask();
-                    downLoadTasks.Add(newTask);
-                    newTask.Start(ID, info, Sessions);
-                }
-                else
-                {
-                    Console.WriteLine("发送成功");
-                    downLoadTasks.First(task => task.ID == ID).isSuccess = true;
-                }
+               var downLoadTarget= e.Data.ToObject<ServerFileInfo>();
+                var fileInfo= new FileInfo(Directory.GetCurrentDirectory()+ downLoadTarget.name);
+                Send(fileInfo);
+                //string info = e.Data;
+                //if (info != "Success")
+                //{
+                //    DownLoadTask newTask = new DownLoadTask();
+                //    downLoadTasks.Add(newTask);
+                //    newTask.Start(ID, info, Sessions);
+                //}
+                //else
+                //{
+                //    Console.WriteLine("发送成功");
+                //    downLoadTasks.First(task => task.ID == ID).isSuccess = true;
+                //}
 
+            }
+            protected override void OnClose(CloseEventArgs e) => Console.WriteLine(e.Reason);
+            protected override void OnError(WebSocketSharp.ErrorEventArgs e) => Console.WriteLine(e.Message);
+        }
+        private class GetServerFileList : WebSocketBehavior
+        {
+            protected override void OnMessage(MessageEventArgs e)
+            {
+                string tag = e.Data;
+                List<ServerFileInfo> serverFileInfos = new List<ServerFileInfo>();
+                new DirectoryInfo(tag).GetFiles("*.*", SearchOption.AllDirectories).ToList().ForEach(file =>
+                {
+                    string fileName = file.FullName.Replace(Directory.GetCurrentDirectory(),"");
+                    serverFileInfos.Add(new ServerFileInfo(fileName, file.Length));
+                });
+                Send(serverFileInfos.ToJson());
             }
             protected override void OnClose(CloseEventArgs e) => Console.WriteLine(e.Reason);
             protected override void OnError(WebSocketSharp.ErrorEventArgs e) => Console.WriteLine(e.Message);

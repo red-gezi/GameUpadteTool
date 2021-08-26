@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebSocketSharp;
@@ -14,82 +15,101 @@ namespace 下载器
 {
     public partial class Form1 : Form
     {
-        string text = "更新";
+        string ip => config[0];
+        string tag => config[1];
+        bool isUpdateMode = true;
+        SynchronizationContext context;
+
+        List<ServerFileInfo> serverFiles = new List<ServerFileInfo>();
+        static List<string> config => File.ReadAllLines("config.ini").ToList();
+
+        private void comboBox1_TextChanged(object sender, EventArgs e) => GetServerFileList();
+
         public Form1()
         {
             InitializeComponent();
-            CheckVersion();
-        }
-        static List<string> config => File.ReadAllLines("config.ini").ToList();
-
-        public void CheckVersion()
-        {
-            string ip = config[0];
-            var checkVersionClient = new WebSocket($"ws://{ip}/CheckVersion");
-            FileInfo fileInfo = new FileInfo(comboBox1.Text + "//GameVerious.txt");
-            string currentVersion = File.ReadAllText(comboBox1.Text + "//GameVerious.txt");
-
-            checkVersionClient.OnMessage += (send, ev) =>
-            {
-                Console.WriteLine("服务器存在版本为" + ev.Data);
-                if (fileInfo.Exists)
-                {
-                    if (currentVersion == ev.Data)
-                    {
-                        Console.WriteLine("当前为最新版本");
-                    }
-                    else
-                    {
-                        Console.WriteLine("请点击更新");
-                    }
-                }
-            };
-            checkVersionClient.OnClose += (send, ev) => { Console.WriteLine(ev.Reason); };
-            checkVersionClient.OnError += (send, ev) => { Console.WriteLine(ev.Message); };
-            checkVersionClient.Connect();
-            checkVersionClient.Send(comboBox1.Text);
-        }
-        private void btn_Update_Click(object sender, EventArgs e)
-        {
-
-            string ip = config[0];
+            context = SynchronizationContext.Current;
             //ip = "127.0.0.1:495";
-            var downloadClient = new WebSocket($"ws://{ip}/Download");
-            TaskManager.Init();
-            downloadClient.OnMessage += (send, ev) =>
+            GetServerFileList();
+        }
+        public void GetServerFileList()
+        {
+            var websocket = new WebSocket($"ws://{ip}/GetServerFileList");
+            websocket.OnMessage += (send, ev) =>
             {
-                FileData fileData = ev.Data.ToObject<FileData>();
-                TaskManager.Add(fileData);
-                Console.WriteLine("接收文件中" + fileData.fileName + ":" + fileData.currentRank + "/" + fileData.totalRank);
-                downloadClient.Send("Success");
+                Console.WriteLine(ev.Data.ToObject<List<ServerFileInfo>>().ToJson(Newtonsoft.Json.Formatting.Indented));
+                serverFiles = ev.Data.ToObject<List<ServerFileInfo>>();
+                websocket.Close();
+                Console.WriteLine("检查本地文件列表");
+                CheckClinetFileList();
             };
-            downloadClient.OnClose += (send, ev) => { Console.WriteLine(ev.Reason); };
-            downloadClient.OnError += (send, ev) => { Console.WriteLine(ev.Message); };
-            //Console.ReadLine();
-            downloadClient.Connect();
-            Console.WriteLine("连接完成");
-            FlieList flieList = new FlieList(comboBox1.Text);
-            new DirectoryInfo(comboBox1.Text).GetFiles("*", SearchOption.AllDirectories).ToList().ForEach(file => flieList.Add(file));
-            downloadClient.Send(flieList.ToJson());
-            Console.WriteLine("发送完毕");
-
-            //Console.ReadLine();
-            //downloadClient.Close();
+            websocket.OnClose += (send, ev) => { Console.WriteLine(ev.Reason); };
+            websocket.OnError += (send, ev) => { Console.WriteLine(ev.Message); };
+            websocket.Connect();
+            websocket.Send(tag);
         }
-
-        private void timer1_Tick(object sender, EventArgs e)
+        public void CheckClinetFileList()
         {
-            btn_Update.Text=text;
+            List<ServerFileInfo> clientFileInfos = new List<ServerFileInfo>();
+            new DirectoryInfo(tag).GetFiles("*.*", SearchOption.AllDirectories).ToList().ForEach(file =>
+            {
+                string fileName = file.FullName.Replace(Directory.GetCurrentDirectory(), "");
+                clientFileInfos.Add(new ServerFileInfo(fileName, file.Length));
+            });
+            clientFileInfos.ForEach(clientFile =>
+            {
+                var targetFile = serverFiles.FirstOrDefault(serverFile => serverFile.name == clientFile.name && serverFile.length == clientFile.length);
+                if (targetFile != null)
+                {
+                    serverFiles.Remove(targetFile);
+                }
+            });
+            SetProgressBar(serverFiles.Count);
+            Console.WriteLine(clientFileInfos.ToJson());
         }
-
-        private void comboBox1_TextChanged(object sender, EventArgs e)
+        public void SetProgressBar(int num)
         {
-            CheckVersion();
+            Task.Run(() =>
+            {
+                SynchronizationContext.SetSynchronizationContext=(context);
+                progressBar1.Maximum = num;
+                progressBar1.Value = 1;
+            });
+           
         }
-
+        public void AddProgressBar()
+        {
+            progressBar1.Value++;
+        }
         private void btn_start_Click(object sender, EventArgs e)
         {
-            Process.Start(new DirectoryInfo(comboBox1.Text).GetFiles("*.exe").First().FullName);
+            if (isUpdateMode)
+            {
+                GetServerFileList();
+                serverFiles.ToList().ForEach(serverFile =>
+                {
+                    var websocket = new WebSocket($"ws://{ip}/Download");
+                    //TaskManager.Init();
+                    websocket.OnMessage += (send, ev) =>
+                    {
+
+                        string targetPath = Directory.GetCurrentDirectory() + serverFile.name;
+                        new FileInfo(targetPath).Directory.Create();
+                        File.WriteAllBytes(targetPath, ev.RawData);
+                        AddProgressBar();
+                    };
+                    websocket.OnClose += (send, ev) => { Console.WriteLine(ev.Reason); };
+                    websocket.OnError += (send, ev) => { Console.WriteLine(ev.Message); };
+                    websocket.Connect();
+                    Console.WriteLine("连接完成:下载" + serverFile.name);
+                    websocket.Send(serverFile.ToJson());
+                });
+                Console.WriteLine("发送完毕");
+            }
+            else
+            {
+                Process.Start(new DirectoryInfo(comboBox1.Text).GetFiles("*.exe").First().FullName);
+            }
         }
     }
 }

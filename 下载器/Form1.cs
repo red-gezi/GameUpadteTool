@@ -29,6 +29,7 @@ namespace 下载器
         {
             InitializeComponent();
             context = SynchronizationContext.Current;
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             //ip = "127.0.0.1:495";
             GetServerFileList();
         }
@@ -37,7 +38,7 @@ namespace 下载器
             var websocket = new WebSocket($"ws://{ip}/GetServerFileList");
             websocket.OnMessage += (send, ev) =>
             {
-                Console.WriteLine(ev.Data.ToObject<List<ServerFileInfo>>().ToJson(Newtonsoft.Json.Formatting.Indented));
+                //Console.WriteLine(ev.Data.ToObject<List<ServerFileInfo>>().ToJson(Newtonsoft.Json.Formatting.Indented));
                 serverFiles = ev.Data.ToObject<List<ServerFileInfo>>();
                 websocket.Close();
                 Console.WriteLine("检查本地文件列表");
@@ -51,6 +52,7 @@ namespace 下载器
         public void CheckClinetFileList()
         {
             List<ServerFileInfo> clientFileInfos = new List<ServerFileInfo>();
+            new DirectoryInfo(tag).Create();
             new DirectoryInfo(tag).GetFiles("*.*", SearchOption.AllDirectories).ToList().ForEach(file =>
             {
                 string fileName = file.FullName.Replace(Directory.GetCurrentDirectory(), "");
@@ -65,21 +67,26 @@ namespace 下载器
                 }
             });
             SetProgressBar(serverFiles.Count);
-            Console.WriteLine(clientFileInfos.ToJson());
+            //Console.WriteLine(clientFileInfos.ToJson());
         }
         public void SetProgressBar(int num)
         {
-            Task.Run(() =>
-            {
-                SynchronizationContext.SetSynchronizationContext=(context);
-                progressBar1.Maximum = num;
-                progressBar1.Value = 1;
-            });
+           
+                Action a = () =>
+                 {
+                     progressBar1.Maximum = num;
+                     progressBar1.Value = 0;
+                 };
+                Invoke(a);
            
         }
         public void AddProgressBar()
         {
-            progressBar1.Value++;
+            Action a = () =>
+            {
+                progressBar1.Value++;
+            };
+            Invoke(a);
         }
         private void btn_start_Click(object sender, EventArgs e)
         {

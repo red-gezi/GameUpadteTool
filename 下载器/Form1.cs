@@ -28,6 +28,7 @@ namespace 下载器
         public Form1()
         {
             InitializeComponent();
+            label1.Parent = pictureBox1;
             context = SynchronizationContext.Current;
             Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
             //ip = "127.0.0.1:495";
@@ -71,14 +72,17 @@ namespace 下载器
         }
         public void SetProgressBar(int num)
         {
-           
-                Action a = () =>
-                 {
-                     progressBar1.Maximum = num;
-                     progressBar1.Value = 0;
-                 };
-                Invoke(a);
-           
+
+            Action a = () =>
+            {
+
+                progressBar1.Visible = !(num == 0);
+                label1.Visible = !(num == 0);
+                progressBar1.Maximum = num;
+                progressBar1.Value = num == 0 ? 0 : 1;
+            };
+            Invoke(a);
+
         }
         public void AddProgressBar()
         {

@@ -53,3 +53,14 @@ D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.csproj.CoreCompil
 D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.csproj.CopyComplete
 D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.exe
 D:\vs2022-Project\GameUpadteTool\下载器\obj\Debug\下载器.pdb
+E:\东方格致录\更新器\GameUpadteTool\下载器\bin\Debug\下载器.exe.config
+E:\东方格致录\更新器\GameUpadteTool\下载器\bin\Debug\下载器.exe
+E:\东方格致录\更新器\GameUpadteTool\下载器\bin\Debug\下载器.pdb
+E:\东方格致录\更新器\GameUpadteTool\下载器\bin\Debug\Newtonsoft.Json.dll
+E:\东方格致录\更新器\GameUpadteTool\下载器\obj\Debug\下载器.csprojAssemblyReference.cache
+E:\东方格致录\更新器\GameUpadteTool\下载器\obj\Debug\下载器.Form1.resources
+E:\东方格致录\更新器\GameUpadteTool\下载器\obj\Debug\下载器.Properties.Resources.resources
+E:\东方格致录\更新器\GameUpadteTool\下载器\obj\Debug\下载器.csproj.GenerateResource.cache
+E:\东方格致录\更新器\GameUpadteTool\下载器\obj\Debug\下载器.csproj.CopyComplete
+E:\东方格致录\更新器\GameUpadteTool\下载器\obj\Debug\下载器.exe
+E:\东方格致录\更新器\GameUpadteTool\下载器\obj\Debug\下载器.pdb

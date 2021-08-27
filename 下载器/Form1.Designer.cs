@@ -40,7 +40,7 @@
             // 
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(739, 445);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -55,7 +55,7 @@
             "diy",
             "gezi"});
             this.comboBox1.Location = new System.Drawing.Point(580, 341);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(92, 20);
             this.comboBox1.TabIndex = 1;
@@ -65,7 +65,7 @@
             // btn_start
             // 
             this.btn_start.Location = new System.Drawing.Point(580, 368);
-            this.btn_start.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btn_start.Margin = new System.Windows.Forms.Padding(2);
             this.btn_start.Name = "btn_start";
             this.btn_start.Size = new System.Drawing.Size(91, 40);
             this.btn_start.TabIndex = 3;
@@ -76,11 +76,12 @@
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(60, 368);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(2);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(488, 25);
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Value = 50;
+            this.progressBar1.Visible = false;
             // 
             // label1
             // 
@@ -95,6 +96,7 @@
             this.label1.Size = new System.Drawing.Size(152, 20);
             this.label1.TabIndex = 5;
             this.label1.Text = "文件更新进度：5/42";
+            this.label1.Visible = false;
             // 
             // Form1
             // 
@@ -108,7 +110,7 @@
             this.Controls.Add(this.pictureBox1);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "更新器";

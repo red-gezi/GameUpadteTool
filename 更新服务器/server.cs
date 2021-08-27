@@ -74,7 +74,6 @@ namespace 更新服务器
                     int bytesRead;
                     while ((bytesRead = istream.Read(buffer, 0, 2048)) > 0)
                     {
-                        //   ws.Send(new ArraySegment<byte>(buffer));
                         if (bytesRead==2048)
                         {
                             Send(buffer);

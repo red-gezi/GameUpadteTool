@@ -36,7 +36,6 @@ namespace 下载器
             var websocket = new WebSocket($"ws://{ip}/GetServerFileList");
             websocket.OnMessage += (send, ev) =>
             {
-                //Console.WriteLine(ev.Data.ToObject<List<ServerFileInfo>>().ToJson(Newtonsoft.Json.Formatting.Indented));
                 serverFiles = ev.Data.ToObject<List<ServerFileInfo>>();
                 Console.WriteLine("服务端文件列表数量" + serverFiles.Count);
                 websocket.Close();
@@ -80,25 +79,16 @@ namespace 下载器
                 {
                     Console.WriteLine("下载一个文件");
                     var websocket = new WebSocket($"ws://{ip}/Download");
-                    bool isFIleDownOver = false;
+                    //bool isFIleDownOver = false;
                     List<byte> fileData = new List<byte>();
                     websocket.OnMessage += (send, ev) =>
                     {
                         string targetPath = Directory.GetCurrentDirectory() + serverFile.name;
                         new FileInfo(targetPath).Directory.Create();
-                        //File.WriteAllBytes(targetPath, ev.RawData);
-                        //isFIleDownOver= true;
-
-                        //AddProgressBar();
-                        //if (progressBar1.Value == progressBar1.Maximum)
-                        //{
-                        //    GetServerFileList();
-                        //}
-                        //websocket.Close();
                         if (ev.Data == "over")
                         {
                             File.WriteAllBytes(targetPath, fileData.ToArray());
-                            isFIleDownOver = true;
+                            //isFIleDownOver = true;
                             AddProgressBar();
                             if (progressBar1.Value == progressBar1.Maximum)
                             {
@@ -117,20 +107,20 @@ namespace 下载器
                     websocket.Connect();
                     Console.WriteLine("连接完成:下载" + serverFile.name);
                     websocket.Send(serverFile.ToJson());
-                    await Task.Run(async () =>
-                    {
-                        while (!isFIleDownOver)
-                        {
-                            await Task.Delay(100);
-                        }
-                    });
+                    //await Task.Run(async () =>
+                    //{
+                    //    while (!isFIleDownOver)
+                    //    {
+                    //        await Task.Delay(100);
+                    //    }
+                    //});
                 };
                 Console.WriteLine("发送完毕");
             }
             else
             {
-                MessageBox.Show("这时启动游戏");
-                //Process.Start(new DirectoryInfo(comboBox1.Text).GetFiles("*.exe").First().FullName);
+                //MessageBox.Show("这时启动游戏");
+                Process.Start(new DirectoryInfo(comboBox1.Text).GetFiles("*.exe").First().FullName);
             }
         }
         public void SetProgressBar(int num)
@@ -154,7 +144,5 @@ namespace 下载器
             Invoke(a);
         }
         private void btn_start_Click(object sender, EventArgs e) => GetServerFileList();
-
-
     }
 }

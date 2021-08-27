@@ -15,13 +15,16 @@ namespace 下载器
 {
     public partial class Form1 : Form
     {
-        string ip => config[0];
-        string tag => config[1];
-        bool isUpdateOver = false;
+        string ip = configs[0];
+        string tag => configs[1];
         List<ServerFileInfo> serverFiles = new List<ServerFileInfo>();
-        static List<string> config => File.ReadAllLines("config.ini").ToList();
-        private void comboBox1_TextChanged(object sender, EventArgs e) => GetServerFileList();
-
+        static List<string> configs => File.ReadAllLines("config.ini").ToList();
+        private void comboBox1_TextChanged(object sender, EventArgs e)
+        {
+            var tempConfigs = configs;
+            tempConfigs[1] = comboBox1.Text;
+            File.WriteAllLines("config.ini", tempConfigs);
+        }
         public Form1()
         {
             InitializeComponent();
@@ -30,56 +33,83 @@ namespace 下载器
         }
         public void GetServerFileList()
         {
-            isUpdateOver = false;
             var websocket = new WebSocket($"ws://{ip}/GetServerFileList");
             websocket.OnMessage += (send, ev) =>
             {
                 //Console.WriteLine(ev.Data.ToObject<List<ServerFileInfo>>().ToJson(Newtonsoft.Json.Formatting.Indented));
                 serverFiles = ev.Data.ToObject<List<ServerFileInfo>>();
+                Console.WriteLine("服务端文件列表数量" + serverFiles.Count);
                 websocket.Close();
-                Console.WriteLine("检查本地文件列表");
-                CheckClinetFileList();
+                _ = CheckClinetFileListAsync();
             };
             websocket.OnClose += (send, ev) => { Console.WriteLine(ev.Reason); };
             websocket.OnError += (send, ev) => { Console.WriteLine(ev.Message); };
             websocket.Connect();
             websocket.Send(tag);
         }
-        public void CheckClinetFileList()
+        public async Task CheckClinetFileListAsync()
         {
             List<ServerFileInfo> clientFileInfos = new List<ServerFileInfo>();
             new DirectoryInfo(tag).Create();
             new DirectoryInfo(tag).GetFiles("*.*", SearchOption.AllDirectories).ToList().ForEach(file =>
             {
                 string fileName = file.FullName.Replace(Directory.GetCurrentDirectory(), "");
-                clientFileInfos.Add(new ServerFileInfo(fileName, file.Length));
+                clientFileInfos.Add(new ServerFileInfo(fileName.Replace('\\', '/'), file.Length));
             });
+            Console.WriteLine("客户端文件列表数量" + serverFiles.Count);
             //对比服务器和客户端文件记录
             clientFileInfos.ForEach(clientFile =>
             {
-                var targetFile = serverFiles.FirstOrDefault(serverFile => serverFile.name == clientFile.name && serverFile.length == clientFile.length);
+                var targetFile = serverFiles.FirstOrDefault(serverFile =>
+                {
+                    string serverName = serverFile.name.Replace('\\', '/');//解决windows和linux平台上路径分隔符不一致问题
+                    return serverName == clientFile.name && serverFile.length == clientFile.length;
+                    });
+                ;
                 if (targetFile != null)
                 {
                     serverFiles.Remove(targetFile);
                 }
             });
-            isUpdateOver = true;
+            Console.WriteLine("对比后文件列表数量" + serverFiles.Count);
             SetProgressBar(serverFiles.Count);
 
             if (serverFiles.Any())
             {
-                serverFiles.ToList().ForEach(serverFile =>
+                foreach (var serverFile in serverFiles.ToList())
                 {
+                    Console.WriteLine("下载一个文件");
                     var websocket = new WebSocket($"ws://{ip}/Download");
+                    bool isFIleDownOver = false;
+                    List<byte> fileData = new List<byte>();
                     websocket.OnMessage += (send, ev) =>
                     {
                         string targetPath = Directory.GetCurrentDirectory() + serverFile.name;
                         new FileInfo(targetPath).Directory.Create();
-                        File.WriteAllBytes(targetPath, ev.RawData);
-                        AddProgressBar();
-                        if (progressBar1.Value == progressBar1.Maximum)
+                        //File.WriteAllBytes(targetPath, ev.RawData);
+                        //isFIleDownOver= true;
+
+                        //AddProgressBar();
+                        //if (progressBar1.Value == progressBar1.Maximum)
+                        //{
+                        //    GetServerFileList();
+                        //}
+                        //websocket.Close();
+                        if (ev.Data == "over")
                         {
-                            GetServerFileList();
+                            File.WriteAllBytes(targetPath, fileData.ToArray());
+                            isFIleDownOver = true;
+                            AddProgressBar();
+                            if (progressBar1.Value == progressBar1.Maximum)
+                            {
+                                GetServerFileList();
+                            }
+                            websocket.Close();
+                        }
+                        else
+                        {
+                            fileData.AddRange(ev.RawData);
+                            Console.Write("*");
                         }
                     };
                     websocket.OnClose += (send, ev) => { Console.WriteLine(ev.Reason); };
@@ -87,7 +117,14 @@ namespace 下载器
                     websocket.Connect();
                     Console.WriteLine("连接完成:下载" + serverFile.name);
                     websocket.Send(serverFile.ToJson());
-                });
+                    await Task.Run(async () =>
+                    {
+                        while (!isFIleDownOver)
+                        {
+                            await Task.Delay(100);
+                        }
+                    });
+                };
                 Console.WriteLine("发送完毕");
             }
             else
@@ -117,5 +154,7 @@ namespace 下载器
             Invoke(a);
         }
         private void btn_start_Click(object sender, EventArgs e) => GetServerFileList();
+
+
     }
 }
